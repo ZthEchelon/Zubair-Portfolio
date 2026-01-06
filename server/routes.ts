@@ -99,6 +99,27 @@ export async function registerRoutes(
 
   const educationSeed = [
     {
+      school: "York University",
+      degree: "French Language Studies",
+      field: "Language Studies",
+      startDate: "2025",
+      endDate: "2025"
+    },
+    {
+      school: "Ted Rogers School of Management - Toronto Metropolitan University",
+      degree: "Advanced Digital and Professional Training",
+      field: "Professional Development",
+      startDate: "2025",
+      endDate: "2025"
+    },
+    {
+      school: "University of Calgary",
+      degree: "Microsoft Certified: Azure Fundamentals",
+      field: "Cloud Computing",
+      startDate: "2024",
+      endDate: "2024"
+    },
+    {
       school: "University of Toronto",
       degree: "Bachelor of Computer Science",
       field: "Computer Science",
@@ -152,9 +173,10 @@ export async function registerRoutes(
 
   const existingProfile = await storage.getProfile();
   const experienceCount = (await storage.getExperiences()).length;
+  const educationCount = (await storage.getEducation()).length;
   const projectCount = (await storage.getProjects()).length;
   const skillCount = (await storage.getSkills()).length;
-  const shouldSeed = !existingProfile || existingProfile.title !== profileSeed.title || experienceCount === 0 || projectCount === 0 || skillCount < skillsSeed.length;
+  const shouldSeed = !existingProfile || existingProfile.title !== profileSeed.title || experienceCount === 0 || projectCount === 0 || educationCount < educationSeed.length || skillCount < skillsSeed.length;
 
   if (shouldSeed) {
     await db.delete(experiencesTable);
