@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Github, ExternalLink, Tag, FileText } from "lucide-react";
-import type { Project } from "@shared/schema";
+import { Github, ExternalLink, Tag, FileText, X } from "lucide-react";
+import type { Project } from "@/data/portfolio";
 
 type CaseStudy = {
   problem: string;
@@ -21,6 +22,7 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, caseStudy, index }: ProjectCardProps) {
+  const [showModal, setShowModal] = useState(false);
   const links = {
     demo: caseStudy?.links?.demo ?? project.link,
     github: caseStudy?.links?.github ?? project.githubLink,
@@ -68,39 +70,78 @@ export function ProjectCard({ project, caseStudy, index }: ProjectCardProps) {
 
       {/* ...existing code for image, details, and footer... */}
       <div className="relative h-44 overflow-hidden bg-muted">
-        {project.imageUrl ? (
-          <img 
-            src={project.imageUrl} 
-            alt={project.title} 
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+        {/* Clickable image for modal expansion */}
+        {caseStudy?.photo ? (
+          <img
+            src={caseStudy.photo}
+            alt={project.title}
+            className="w-full h-full object-cover object-center rounded-lg transition-transform duration-500 group-hover:scale-105 cursor-zoom-in"
+            style={{ aspectRatio: '16/7', background: '#f3f4f6' }}
+            onClick={() => setShowModal(true)}
+          />
+        ) : project.imageUrl ? (
+          <img
+            src={project.imageUrl}
+            alt={project.title}
+            className="w-full h-full object-cover object-center rounded-lg transition-transform duration-500 group-hover:scale-105 cursor-zoom-in"
+            style={{ aspectRatio: '16/7', background: '#f3f4f6' }}
+            onClick={() => setShowModal(true)}
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+          <div className="w-full h-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center rounded-lg">
             <Tag className="w-12 h-12 text-primary/20" />
           </div>
         )}
-        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
-          {links.github && (
-            <a 
-              href={links.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-3 bg-white text-black rounded-full hover:scale-110 transition-transform"
-            >
-              <Github className="w-5 h-5" />
-            </a>
-          )}
-          {links.demo && (
-            <a 
-              href={links.demo}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-3 bg-primary text-white rounded-full hover:scale-110 transition-transform"
-            >
-              <ExternalLink className="w-5 h-5" />
-            </a>
-          )}
-        </div>
+              {/* Modal for expanded image */}
+              {showModal && (
+                <div
+                  className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm animate-fade-in"
+                  onClick={() => setShowModal(false)}
+                >
+                  <div
+                    className="relative max-w-3xl w-full mx-4"
+                    onClick={e => e.stopPropagation()}
+                  >
+                    <button
+                      className="absolute top-2 right-2 z-10 p-2 bg-white/80 hover:bg-white rounded-full shadow"
+                      onClick={() => setShowModal(false)}
+                      aria-label="Close expanded image"
+                    >
+                      <X className="w-6 h-6 text-black" />
+                    </button>
+                    <img
+                      src={caseStudy?.photo || project.imageUrl}
+                      alt={project.title}
+                      className="w-full h-auto max-h-[80vh] rounded-xl object-contain bg-white"
+                    />
+                  </div>
+                </div>
+              )}
+        {/* Remove overlay links for any project with a caseStudy.photo */}
+        {!caseStudy?.photo && (
+          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+            {links.github && (
+              <a
+                href={links.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 bg-white text-black rounded-full hover:scale-110 transition-transform"
+              >
+                <Github className="w-5 h-5" />
+              </a>
+            )}
+            {links.demo && (
+              <a
+                href={links.demo}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 bg-primary text-white rounded-full hover:scale-110 transition-transform"
+              >
+                <ExternalLink className="w-5 h-5" />
+              </a>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="p-6 flex flex-col flex-grow space-y-4">

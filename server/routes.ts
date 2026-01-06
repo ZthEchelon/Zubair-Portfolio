@@ -63,36 +63,51 @@ export async function registerRoutes(
 
   const experiencesSeed = [
     {
-      company: "SAP Fioneer",
-      role: "Software Engineer",
-      startDate: "Jan 2022",
-      endDate: "Aug 2022",
+      company: "G2i Inc.",
+      role: "Software Engineer (Part-time)",
+      startDate: "Aug 2025",
+      endDate: "Present",
       description: [
-        "Built Spring Boot services for banking workflows and shipped API changes through CI/CD without downtime.",
-        "Added validation layers and integration tests to protect data integrity across payment and ledger updates.",
-        "Improved observability with structured logging/metrics so incidents were diagnosable in minutes instead of hours."
+        "Tech: Python, SQL, Git/GitHub, CI/CD; delivered scoped software tasks with correctness, maintainability, and clean handoff in mind.",
+        "Worked in a GitHub PR workflow with CI checks (branching, reviews, verification) to keep changes safe and releasable.",
+        "Built and validated SQL queries/transformations to support features, debugging, and data correctness checks.",
+        "Collaborated asynchronously in a remote setup, shipping incremental improvements with clear updates and documentation."
       ].join("\n")
     },
     {
-      company: "WeMeta",
-      role: "Software Engineer",
-      startDate: "Jul 2021",
-      endDate: "Feb 2023",
+      company: "The Senac Group",
+      role: "Financial Software Analyst",
+      startDate: "Jun 2023",
+      endDate: "May 2025",
       description: [
-        "Delivered React/TypeScript features and Node.js endpoints that served marketplace data with predictable sub-second latency.",
-        "Introduced caching and pagination strategies that cut unnecessary API calls and stabilized dashboard performance.",
-        "Hardened releases with automated tests and pipelines so weekly deploys shipped without breaking user sessions."
+        "Tech: Excel, VBA, SQL, reporting pipelines, budgeting/forecast models, documentation/runbooks.",
+        "Built automated reporting pipelines (SQL → Excel/VBA output) removing 10+ hours/week of manual work and standardizing weekly deliverables.",
+        "Created budgeting/variance dashboards with validation checks and guardrails, cutting formula defects by ~30% and improving forecast reliability.",
+        "Produced scenario + cost/benefit models surfacing $25K+ in annual efficiency gains; owned finance tooling ops and wrote repeatable runbooks."
       ].join("\n")
     },
     {
-      company: "Web Dev / Full Stack",
-      role: "Software Engineer",
-      startDate: "Dec 2019",
-      endDate: "Mar 2023",
+      company: "Elevation Athletics",
+      role: "Regional Program Coordinator",
+      startDate: "Mar 2023",
+      endDate: "Present",
       description: [
-        "Built and maintained client web apps in Whitby as a full-stack developer—React frontends backed by REST/SQL services.",
-        "Stood up data pipelines and dashboards that replaced manual spreadsheets for small teams.",
-        "Owned deployments, Dockerized services, and monitoring so changes could ship quickly with rollback options."
+        "Tech: TeamSnap API, Excel automation, operational tooling, support workflows, process training.",
+        "Built a participant tracking system on the TeamSnap API, increasing onboarding throughput by ~40% via cleaner workflows and automation.",
+        "Ran a structured support + triage workflow for 1,000+ users across 8 cities, keeping stakeholders unblocked with clear updates.",
+        "Developed Excel automation utilities that reduced game-day data entry/reporting time by ~60%; led tooling/process enablement for staff/coaches."
+      ].join("\n")
+    },
+    {
+      company: "NDCTrades",
+      role: "Finance Solutions Architect",
+      startDate: "Sep 2023",
+      endDate: "Sep 2024",
+      description: [
+        "Tech: QuickBooks, Humanity, workflow automation, reporting dashboards, implementation playbooks.",
+        "Automated invoicing + pricing workflows across QuickBooks/Humanity, increasing recurring revenue by ~20% while reducing operational errors.",
+        "Streamlined payroll via data cleanup and automated checks, cutting processing time by ~35% and improving correctness.",
+        "Built compliance/performance dashboards so risks surfaced earlier; wrote reusable implementation templates to standardize customer setups."
       ].join("\n")
     }
   ];

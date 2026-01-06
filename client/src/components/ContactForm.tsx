@@ -1,21 +1,29 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertContactMessageSchema, type InsertContactMessage } from "@shared/schema";
-import { useContactMutation } from "@/hooks/use-portfolio";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Send } from "lucide-react";
+import { contactEmail } from "@/data/portfolio";
+
+const contactSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Please enter a valid email"),
+  message: z.string().min(1, "Message is required"),
+});
+
+type ContactFormValues = z.infer<typeof contactSchema>;
 
 export function ContactForm() {
   const { toast } = useToast();
-  const contactMutation = useContactMutation();
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const form = useForm<InsertContactMessage>({
-    resolver: zodResolver(insertContactMessageSchema),
+  const form = useForm<ContactFormValues>({
+    resolver: zodResolver(contactSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -23,22 +31,21 @@ export function ContactForm() {
     }
   });
 
-  const onSubmit = async (data: InsertContactMessage) => {
-    try {
-      await contactMutation.mutateAsync(data);
-      setSubmitted(true);
-      toast({
-        title: "Message Sent!",
-        description: "Thank you for reaching out. I'll get back to you soon.",
-      });
-      form.reset();
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to send message",
-        variant: "destructive",
-      });
-    }
+  const onSubmit = (data: ContactFormValues) => {
+    setIsSubmitting(true);
+
+    const subject = `Portfolio inquiry from ${data.name}`;
+    const body = `${data.message}\n\nFrom: ${data.name} (${data.email})`;
+    const mailtoLink = `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    window.location.href = mailtoLink;
+    setSubmitted(true);
+    toast({
+      title: "Email draft opened",
+      description: `Your message is ready to send to ${contactEmail}.`,
+    });
+    form.reset();
+    setIsSubmitting(false);
   };
 
   if (submitted) {
@@ -108,9 +115,9 @@ export function ContactForm() {
         <Button 
           type="submit" 
           className="w-full h-12 rounded-xl text-lg font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all"
-          disabled={contactMutation.isPending}
+          disabled={isSubmitting}
         >
-          {contactMutation.isPending ? (
+          {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-5 w-5 animate-spin" />
               Sending...

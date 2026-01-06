@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
 import { 
   Github, 
   Linkedin, 
@@ -24,6 +25,31 @@ import {
 } from "@/hooks/use-portfolio";
 
 export default function Portfolio() {
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    if (typeof window === "undefined") return "light";
+    const stored = window.localStorage.getItem("theme");
+    if (stored === "dark" || stored === "light") return stored;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  });
+
+  const applyTheme = useMemo(
+    () => (next: "light" | "dark") => {
+      const root = document.documentElement;
+      root.classList.remove(next === "dark" ? "light" : "dark");
+      root.classList.add(next);
+      window.localStorage.setItem("theme", next);
+    },
+    [],
+  );
+
+  useEffect(() => {
+    applyTheme(theme);
+  }, [theme, applyTheme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
+
   const { data: profile } = useProfile();
   const { data: projects } = useProjects();
   const { data: experiences } = useExperiences();
@@ -141,8 +167,10 @@ export default function Portfolio() {
         github: "https://github.com/ZthEchelon/pickleball-session-manager",
         caseStudy: profileData.resumeUrl,
       },
+      photo: "https://i.imgur.com/c60r2XZ.jpeg",
     },
     "Market Data Pipeline": {
+        photo: "https://i.imgur.com/vJnpwps.png",
       problem: "Needed reliable, de-duplicated market indicators for dashboards without hammering upstream APIs.",
       built: "Backend pipeline that ingests price/indicator feeds, normalizes them into Postgres, and serves typed REST endpoints.",
       decisions: [
@@ -153,12 +181,13 @@ export default function Portfolio() {
       ],
       impact: "Consistent indicator data, faster dashboards, and predictable costs when third-party APIs rate-limit.",
       links: {
-        demo: "https://github.com/ZthEchelon/market-data-pipeline",
+        demo: "https://marketdata.zubairmuwwakil.com",
         github: "https://github.com/ZthEchelon/market-data-pipeline",
         caseStudy: profileData.resumeUrl,
       },
     },
     "MindSky Website": {
+        photo: "https://i.imgur.com/3Sz7oXy.png",
       problem: "MindSky needed a fast, clear landing page that converts curious users without looking like a template.",
       built: "Responsive marketing site with modular sections, analytics hooks, and lightweight animations.",
       decisions: [
@@ -174,6 +203,7 @@ export default function Portfolio() {
       },
     },
     "Return Reminder & Tracking SaaS": {
+        photo: "https://i.imgur.com/3mFeClS.png",
       problem: "Consumers frequently miss return deadlines or forget to follow up on refunds because purchase information is fragmented across emails and receipts. Most finance tools track spending passively but don’t manage return lifecycles or enforce deadlines.",
       built: "SaaS platform for tracking return deadlines, refund status, and money at risk—email ingestion, reminders, and Stripe subscriptions included.",
       decisions: [
@@ -253,8 +283,8 @@ export default function Portfolio() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 md:h-20">
             <a href="/" className="flex items-center space-x-2 group cursor-pointer">
-              <div className="bg-primary text-primary-foreground p-2 rounded-lg group-hover:scale-110 transition-transform">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-code-xml w-6 h-6"><path d="m18 16 4-4-4-4"></path><path d="m6 8-4 4 4 4"></path><path d="M14.5 4-5 16"></path></svg>
+              <div className="p-0 group-hover:scale-110 transition-transform">
+                <img src="https://i.imgur.com/hu5ZtjL.jpeg" alt="Logo" className="w-9 h-9 object-cover rounded-lg shadow" />
               </div>
               <span className="font-serif font-bold text-xl tracking-tight">Zubair Muwwakil</span>
             </a>
@@ -263,14 +293,30 @@ export default function Portfolio() {
               <a href="#experience" className="text-muted-foreground hover:text-primary font-medium transition-colors text-sm uppercase tracking-wide">Experience</a>
               <a href="#projects" className="text-muted-foreground hover:text-primary font-medium transition-colors text-sm uppercase tracking-wide">Projects</a>
               <a href="#contact" className="text-muted-foreground hover:text-primary font-medium transition-colors text-sm uppercase tracking-wide">Contact</a>
-              <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover-elevate active-elevate-2 border border-transparent h-9 w-9 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-sun h-5 w-5"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+              <button
+                onClick={toggleTheme}
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover-elevate active-elevate-2 border border-transparent h-9 w-9 rounded-full"
+                aria-label="Toggle color theme"
+              >
+                {theme === "dark" ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-moon h-5 w-5"><path d="M12 3c.132 0 .263 0 .393.01a7.5 7.5 0 0 0 8.598 8.598A9 9 0 1 1 12 3Z"></path></svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-sun h-5 w-5"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+                )}
               </button>
               <a href="#contact" className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover-elevate active-elevate-2 bg-primary text-primary-foreground border border-primary-border min-h-9 py-2 rounded-full px-6 font-semibold">Hire Me</a>
             </div>
             <div className="md:hidden flex items-center gap-4">
-              <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover-elevate active-elevate-2 border border-transparent h-9 w-9 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-sun h-5 w-5"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+              <button
+                onClick={toggleTheme}
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover-elevate active-elevate-2 border border-transparent h-9 w-9 rounded-full"
+                aria-label="Toggle color theme"
+              >
+                {theme === "dark" ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-moon h-5 w-5"><path d="M12 3c.132 0 .263 0 .393.01a7.5 7.5 0 0 0 8.598 8.598A9 9 0 1 1 12 3Z"></path></svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-sun h-5 w-5"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+                )}
               </button>
               <button className="text-foreground hover:text-primary transition-colors p-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-menu w-6 h-6"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
@@ -281,21 +327,21 @@ export default function Portfolio() {
       </nav>
 
       {/* Hero Section - new style from user HTML */}
-      <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
+      <section className="relative min-h-[60vh] flex items-center pt-6 md:pt-10 pb-8 md:pb-12 overflow-hidden">
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
-        <div className="container-padding relative z-10 w-full">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <div>
+        <div className="container-padding relative z-10 w-full flex justify-center">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-10 items-center max-w-6xl w-full mx-auto">
+            <div className="space-y-4 md:space-y-6">
+              <div className="mt-12 mb-8">
                 <div className="whitespace-nowrap inline-flex items-center font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover-elevate border [border-color:var(--badge-outline)] shadow-xs px-4 py-1.5 text-sm rounded-full border-primary/20 bg-primary/5 text-primary">
                   Software Engineer (Full-Stack / Backend)
                 </div>
               </div>
-              <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight">
+              <h1 className="font-serif text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight">
                 Building reliable systems <br />and the products that use them
               </h1>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">
+              <p className="text-base md:text-lg text-muted-foreground max-w-2xl leading-relaxed">
                 I ship web apps and data pipelines with a focus on reliability, data integrity, performance, and clean architecture. Finance background, SWE-first mindset: strong schemas, predictable APIs, and observability over vibes.
               </p>
               <div className="flex flex-wrap gap-4 pt-2">
@@ -320,16 +366,18 @@ export default function Portfolio() {
                 <a href="https://linkedin.com/in/zubairmuwwakil" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-linkedin w-6 h-6"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg>
                 </a>
-                <a href="mailto:hello@zubairmuwwakil.com" className="hover:text-primary transition-colors">
+                <a href="mailto:zmuwwakil@gmail.com" className="hover:text-primary transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-mail w-6 h-6"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
                 </a>
               </div>
             </div>
             <div className="relative hidden lg:block">
               <div className="relative z-10 w-full aspect-square rounded-full overflow-hidden border-8 border-background shadow-2xl">
-                <div className="w-full h-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center">
-                  <span className="text-9xl font-serif text-muted-foreground/20">ZM</span>
-                </div>
+                <img
+                  src="https://i.imgur.com/aUXrp54.jpeg"
+                  alt="Zubair Muwwakil Logo"
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div className="absolute top-10 -left-10 bg-background p-4 rounded-xl shadow-lg border z-20" style={{ transform: "translateY(-16.8585px)" }}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-terminal w-8 h-8 text-blue-500"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" x2="20" y1="19" y2="19"></line></svg>
@@ -494,7 +542,9 @@ export default function Portfolio() {
                     <p className="text-primary font-medium">{edu.degree}, {edu.field}</p>
                   </div>
                   <div className="text-sm text-muted-foreground bg-secondary px-3 py-1 rounded-full w-fit">
-                    {edu.startDate} - {edu.endDate || "Present"}
+                    {edu.school === "University of Toronto"
+                      ? `${edu.startDate?.split("-")[0] || edu.startDate} - ${edu.endDate?.split("-")[0] || "Present"}`
+                      : edu.startDate?.split("-")[0] || edu.startDate}
                   </div>
                 </motion.div>
               ))}

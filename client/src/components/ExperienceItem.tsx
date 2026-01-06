@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Calendar, Building } from "lucide-react";
-import type { Experience } from "@shared/schema";
+import type { Experience } from "@/data/portfolio";
 
 interface ExperienceItemProps {
   experience: Experience;
