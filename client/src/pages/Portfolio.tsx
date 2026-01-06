@@ -236,8 +236,8 @@ export default function Portfolio() {
   };
 
   // Show loading only if all queries are still loading and none have errored
-  const isLoading = profileLoading && projectsLoading && experiencesLoading;
-  const hasErrors = profileError || projectsError || experiencesError;
+  const isLoading = profileLoading && projectsLoading && experiencesLoading && educationLoading && skillsLoading;
+  const hasErrors = profileError || projectsError || experiencesError || educationError || skillsError;
 
   // On GitHub Pages (static deployment), API calls will fail - show content with defaults
   if (isLoading && !hasErrors) {
