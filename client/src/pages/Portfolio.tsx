@@ -24,11 +24,11 @@ import {
 } from "@/hooks/use-portfolio";
 
 export default function Portfolio() {
-  const { data: profile } = useProfile();
-  const { data: projects } = useProjects();
-  const { data: experiences } = useExperiences();
-  const { data: education } = useEducation();
-  const { data: skills } = useSkills();
+  const { data: profile, isError: profileError, isLoading: profileLoading } = useProfile();
+  const { data: projects, isError: projectsError, isLoading: projectsLoading } = useProjects();
+  const { data: experiences, isError: experiencesError, isLoading: experiencesLoading } = useExperiences();
+  const { data: education, isError: educationError, isLoading: educationLoading } = useEducation();
+  const { data: skills, isError: skillsError, isLoading: skillsLoading } = useSkills();
 
   const profileDefaults = {
     name: "Zubair Muwwakil",
@@ -235,7 +235,12 @@ export default function Portfolio() {
     }
   };
 
-  if (!profile && !projects && !experiences) {
+  // Show loading only if all queries are still loading and none have errored
+  const isLoading = profileLoading && projectsLoading && experiencesLoading;
+  const hasErrors = profileError || projectsError || experiencesError;
+
+  // On GitHub Pages (static deployment), API calls will fail - show content with defaults
+  if (isLoading && !hasErrors) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
