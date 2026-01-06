@@ -10,6 +10,8 @@ export function useProfile() {
       if (!res.ok) throw new Error("Failed to fetch profile");
       return api.profile.get.responses[200].parse(await res.json());
     },
+    retry: false, // Don't retry on GitHub Pages static deployment
+    staleTime: Infinity, // Keep data fresh indefinitely
   });
 }
 
@@ -22,6 +24,8 @@ export function useExperiences() {
       if (!res.ok) throw new Error("Failed to fetch experiences");
       return api.experiences.list.responses[200].parse(await res.json());
     },
+    retry: false, // Don't retry on GitHub Pages static deployment
+    staleTime: Infinity,
   });
 }
 
@@ -34,6 +38,8 @@ export function useEducation() {
       if (!res.ok) throw new Error("Failed to fetch education");
       return api.education.list.responses[200].parse(await res.json());
     },
+    retry: false, // Don't retry on GitHub Pages static deployment
+    staleTime: Infinity,
   });
 }
 
@@ -46,6 +52,8 @@ export function useProjects() {
       if (!res.ok) throw new Error("Failed to fetch projects");
       return api.projects.list.responses[200].parse(await res.json());
     },
+    retry: false, // Don't retry on GitHub Pages static deployment
+    staleTime: Infinity,
   });
 }
 
@@ -58,6 +66,8 @@ export function useSkills() {
       if (!res.ok) throw new Error("Failed to fetch skills");
       return api.skills.list.responses[200].parse(await res.json());
     },
+    retry: false, // Don't retry on GitHub Pages static deployment
+    staleTime: Infinity,
   });
 }
 
