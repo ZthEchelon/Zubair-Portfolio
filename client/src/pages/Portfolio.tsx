@@ -173,6 +173,37 @@ export default function Portfolio() {
         caseStudy: profileData.resumeUrl,
       },
     },
+    "Return Reminder & Tracking SaaS": {
+      problem: "Consumers frequently miss return deadlines or forget to follow up on refunds because purchase information is fragmented across emails and receipts. Most finance tools track spending passively but don’t manage return lifecycles or enforce deadlines.",
+      built: "SaaS platform for tracking return deadlines, refund status, and money at risk—email ingestion, reminders, and Stripe subscriptions included.",
+      decisions: [
+        "Stripe subscription model with webhook-driven state to manage plan changes, access limits, and entitlements without coupling billing logic to request flows.",
+        "Idempotent webhook handling using event IDs to prevent duplicate state transitions during retries.",
+        "Role-based access control (RBAC) separating free vs paid capabilities (active return limits, refund reminders).",
+        "Email-as-input, dashboard-as-source-of-truth to minimize user friction while keeping system state explicit and auditable.",
+        "Deterministic background jobs for deadline and refund reminders, ensuring retries don’t double-send notifications.",
+        "Policy-based deadline computation using merchant templates with user overrides instead of brittle receipt parsing."
+      ],
+      impact: [
+        "Demonstrated end-to-end SaaS architecture: auth, billing, webhooks, background jobs, and stateful workflows.",
+        "Prevented missed return deadlines by surfacing time-bound “money at risk” with proactive reminders.",
+        "Reliable ingestion from inconsistent email formats without requiring bank access or inbox-wide permissions.",
+        "Clear operational visibility with traceable events from email ingestion through reminders and refunds."
+      ].join("\n"),
+      links: {
+        demo: "https://returnreminder.zubairmuwwakil.com",
+        github: "https://github.com/ZthEchelon/return-reminder-saas",
+        caseStudy: "https://returnreminder.zubairmuwwakil.com/case-study",
+      },
+      stack: [
+        "Node",
+        "Postgres",
+        "Stripe Subscriptions",
+        "Webhooks",
+        "Background jobs",
+        "Email ingestion"
+      ],
+    },
   };
 
   const orderedProjects = (projects || []).slice().sort((a, b) => {
@@ -217,49 +248,46 @@ export default function Portfolio() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50 h-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
-          <button 
-            onClick={() => scrollToSection('hero')}
-            className="font-display font-bold text-xl tracking-tight text-primary hover:text-primary/80 transition-colors"
-          >
-            ZM.
-          </button>
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-            <button onClick={() => scrollToSection('about')} className="hover:text-primary transition-colors">About</button>
-            <button onClick={() => scrollToSection('skills')} className="hover:text-primary transition-colors">Skills</button>
-            <button onClick={() => scrollToSection('experience')} className="hover:text-primary transition-colors">Experience</button>
-            <button onClick={() => scrollToSection('projects')} className="hover:text-primary transition-colors">Projects</button>
-            <button onClick={() => scrollToSection('contact')} className="hover:text-primary transition-colors">Contact</button>
-          </div>
-          <Button 
-            size="sm" 
-            className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md shadow-primary/20"
-            asChild
-          >
-            <a href={profileData.resumeUrl} target="_blank" rel="noopener noreferrer">
-              Resume
+      {/* Navigation - new style */}
+      <nav className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16 md:h-20">
+            <a href="#hero" className="flex items-center space-x-2 group cursor-pointer" onClick={e => { e.preventDefault(); scrollToSection('hero'); }}>
+              <div className="bg-primary text-primary-foreground p-2 rounded-lg group-hover:scale-110 transition-transform">
+                <img src="/logo.png" alt="ZM Logo" className="w-6 h-6 object-contain" />
+              </div>
+              <span className="font-serif font-bold text-xl tracking-tight">Zubair Muwwakil</span>
             </a>
-          </Button>
+            <div className="hidden md:flex items-center space-x-8">
+              <a href="#about" className="text-muted-foreground hover:text-primary font-medium transition-colors text-sm uppercase tracking-wide" onClick={e => { e.preventDefault(); scrollToSection('about'); }}>About</a>
+              <a href="#experience" className="text-muted-foreground hover:text-primary font-medium transition-colors text-sm uppercase tracking-wide" onClick={e => { e.preventDefault(); scrollToSection('experience'); }}>Experience</a>
+              <a href="#projects" className="text-muted-foreground hover:text-primary font-medium transition-colors text-sm uppercase tracking-wide" onClick={e => { e.preventDefault(); scrollToSection('projects'); }}>Projects</a>
+              <a href="#contact" className="text-muted-foreground hover:text-primary font-medium transition-colors text-sm uppercase tracking-wide" onClick={e => { e.preventDefault(); scrollToSection('contact'); }}>Contact</a>
+              <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover-elevate active-elevate-2 border border-transparent h-9 w-9 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-moon h-5 w-5"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+              </button>
+              <a href="#contact" className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover-elevate active-elevate-2 bg-primary text-primary-foreground border border-primary-border min-h-9 py-2 rounded-full px-6 font-semibold" onClick={e => { e.preventDefault(); scrollToSection('contact'); }}>Hire Me</a>
+            </div>
+            <div className="md:hidden flex items-center gap-4">
+              <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover-elevate active-elevate-2 border border-transparent h-9 w-9 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-moon h-5 w-5"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+              </button>
+              <button className="text-foreground hover:text-primary transition-colors p-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-menu w-6 h-6"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+              </button>
+            </div>
+          </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section id="hero" className="relative pt-32 pb-20 md:pt-44 md:pb-28 px-4 sm:px-6 lg:px-8 overflow-hidden">
-        {/* Background blobs */}
-        <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl -z-10" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-3xl -z-10" />
-
-        <div className="max-w-7xl mx-auto">
+      {/* Hero Section - updated style */}
+      <section id="hero" className="relative min-h-screen flex items-center pt-20 overflow-hidden">
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
+        <div className="container-padding relative z-10 w-full">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <motion.div 
-              initial="hidden"
-              animate="visible"
-              variants={staggerContainer}
-              className="space-y-8"
-            >
-              <motion.div variants={fadeInUp}>
+            <div className="space-y-8">
+              <div>
                 <div className="flex flex-wrap items-center gap-3 mb-4">
                   <span className="px-4 py-2 rounded-full bg-primary/10 text-primary font-medium text-sm">
                     {profileData.title}
@@ -277,71 +305,46 @@ export default function Portfolio() {
                 <p className="text-muted-foreground leading-relaxed max-w-2xl mt-3">
                   I ship typed contracts, resilient services, and clean architecture so features keep moving instead of fighting regressions.
                 </p>
-              </motion.div>
-
-              <motion.div variants={fadeInUp} className="flex flex-wrap gap-4">
-                <Button size="lg" className="rounded-xl h-12 gap-2 shadow-lg shadow-primary/25" onClick={() => scrollToSection('projects')}>
+              </div>
+              <div className="flex flex-wrap gap-4 pt-2">
+                <button className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover-elevate active-elevate-2 bg-primary text-primary-foreground border border-primary-border min-h-10 px-8 rounded-xl h-12 gap-2 shadow-lg shadow-primary/25" onClick={() => scrollToSection('projects')}>
                   View Projects
-                </Button>
-                <Button variant="outline" size="lg" className="rounded-xl h-12 gap-2" asChild>
-                  <a href={profileData.resumeUrl} target="_blank" rel="noopener noreferrer">
-                    <FileText className="w-5 h-5" /> Resume (PDF)
-                  </a>
-                </Button>
-                <Button variant="ghost" size="lg" className="rounded-xl h-12 gap-2 text-muted-foreground" asChild>
-                  <a href={profileData.githubUrl} target="_blank" rel="noopener noreferrer">
-                    <Github className="w-5 h-5" /> GitHub
-                  </a>
-                </Button>
-                <Button variant="ghost" size="lg" className="rounded-xl h-12 gap-2 text-muted-foreground" asChild>
-                  <a href={profileData.linkedinUrl} target="_blank" rel="noopener noreferrer">
-                    <Linkedin className="w-5 h-5" /> LinkedIn
-                  </a>
-                </Button>
-              </motion.div>
-
-              <motion.div variants={fadeInUp} className="flex flex-wrap gap-3">
-                {[
-                  "Java / Spring Boot • React • SQL • Docker",
-                  "Built data pipelines + web apps",
-                  "Open to US remote (US citizen)"
-                ].map((chip) => (
-                  <span 
-                    key={chip} 
-                    className="px-4 py-2 bg-secondary text-secondary-foreground rounded-full text-sm font-medium"
-                  >
-                    {chip}
-                  </span>
-                ))}
-              </motion.div>
-            </motion.div>
-
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.7 }}
-              className="relative hidden lg:block"
-            >
-              <div className="aspect-square rounded-[2rem] overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20 p-2 rotate-3 hover:rotate-0 transition-transform duration-500">
-                <div className="w-full h-full rounded-[1.8rem] overflow-hidden bg-card relative">
-                  {/* Abstract placeholder or profile image */}
-                  {profile?.imageUrl ? (
-                    <img src={profile.imageUrl} alt={profile.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-muted">
-                      <span className="text-9xl opacity-10 font-display font-bold">ZM</span>
-                    </div>
-                  )}
+                </button>
+                <a href={profileData.resumeUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover-elevate active-elevate-2 border [border-color:var(--button-outline)] shadow-xs active:shadow-none min-h-10 px-8 rounded-xl h-12 gap-2">
+                  <FileText className="w-5 h-5" /> Resume (PDF)
+                </a>
+                <a href={profileData.githubUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover-elevate active-elevate-2 border border-transparent min-h-10 px-8 rounded-xl h-12 gap-2 text-muted-foreground">
+                  <Github className="w-5 h-5" /> GitHub
+                </a>
+                <a href={profileData.linkedinUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover-elevate active-elevate-2 border border-transparent min-h-10 px-8 rounded-xl h-12 gap-2 text-muted-foreground">
+                  <Linkedin className="w-5 h-5" /> LinkedIn
+                </a>
+              </div>
+              <div className="flex flex-wrap gap-3 pt-4">
+                <span className="px-4 py-2 bg-secondary text-secondary-foreground rounded-full text-sm font-medium">Java / Spring Boot • React • SQL • Docker</span>
+                <span className="px-4 py-2 bg-secondary text-secondary-foreground rounded-full text-sm font-medium">Built data pipelines + web apps</span>
+                <span className="px-4 py-2 bg-secondary text-secondary-foreground rounded-full text-sm font-medium">Open to US remote (US citizen)</span>
+              </div>
+            </div>
+            <div className="relative hidden lg:block">
+              <div className="relative z-10 w-full aspect-square rounded-full overflow-hidden border-8 border-background shadow-2xl">
+                <div className="w-full h-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center">
+                  <span className="text-9xl font-serif text-muted-foreground/20">ZM</span>
                 </div>
               </div>
-            </motion.div>
+              <div className="absolute top-10 -left-10 bg-background p-4 rounded-xl shadow-lg border z-20">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-terminal w-8 h-8 text-blue-500"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" x2="20" y1="19" y2="19"></line></svg>
+              </div>
+              <div className="absolute bottom-10 -right-10 bg-background p-4 rounded-xl shadow-lg border z-20">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chart-line w-8 h-8 text-green-500"><path d="M3 3v16a2 2 0 0 0 2 2h16"></path><path d="m19 9-5 5-4-4-3 3"></path></svg>
+              </div>
+            </div>
           </div>
         </div>
-        
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <Button variant="ghost" size="icon" onClick={() => scrollToSection('about')}>
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+          <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover-elevate active-elevate-2 border border-transparent h-9 w-9" onClick={() => scrollToSection('about')}>
             <ChevronDown className="w-6 h-6 text-muted-foreground" />
-          </Button>
+          </button>
         </div>
       </section>
 
@@ -509,7 +512,7 @@ export default function Portfolio() {
             subtitle="What I built, why I built it that way, and how it performs."
             centered
           />
-          
+          {/* Render all project cards from orderedProjects, and always include Return Reminder & Tracking SaaS */}
           <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
             {orderedProjects.map((project, index) => (
               <ProjectCard 
@@ -519,6 +522,20 @@ export default function Portfolio() {
                 index={index} 
               />
             ))}
+            {/* Always show Return Reminder & Tracking SaaS if not already in the list */}
+            {!orderedProjects.some(p => p.title === "Return Reminder & Tracking SaaS") && (
+              <ProjectCard 
+                key="return-reminder-tracking-saas"
+                project={{
+                  id: "return-reminder-tracking-saas",
+                  title: "Return Reminder & Tracking SaaS",
+                  description: projectCaseStudies["Return Reminder & Tracking SaaS"].problem,
+                  stack: projectCaseStudies["Return Reminder & Tracking SaaS"].stack,
+                }}
+                caseStudy={projectCaseStudies["Return Reminder & Tracking SaaS"]}
+                index={orderedProjects.length}
+              />
+            )}
           </div>
         </div>
       </section>

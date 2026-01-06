@@ -37,6 +37,36 @@ export function ProjectCard({ project, caseStudy, index }: ProjectCardProps) {
       transition={{ duration: 0.5, delay: index * 0.1 }}
       className="group bg-card rounded-2xl overflow-hidden border border-border/50 shadow-lg shadow-black/5 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/20 transition-all duration-300 flex flex-col h-full"
     >
+      {/* Case Study Header - Modern Style */}
+      <div className="flex flex-wrap items-start justify-between gap-4 p-6 pb-0">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <div className="whitespace-nowrap inline-flex items-center border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover-elevate border-transparent bg-secondary text-secondary-foreground rounded-full">
+              {project.title}
+            </div>
+            <span className="text-sm text-muted-foreground">
+              {caseStudy?.built || project.description}
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {/* Stack badges: prefer project.stack, fallback to project.tags */}
+            {Array.isArray(project.stack) && project.stack.length > 0
+              ? project.stack.map((tech) => (
+                  <div key={tech} className="whitespace-nowrap inline-flex items-center rounded-md px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover-elevate border [border-color:var(--badge-outline)] shadow-xs text-xs">
+                    {tech}
+                  </div>
+                ))
+              : project.tags?.map((tag) => (
+                  <div key={tag} className="whitespace-nowrap inline-flex items-center rounded-md px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover-elevate border [border-color:var(--badge-outline)] shadow-xs text-xs">
+                    {tag}
+                  </div>
+                ))}
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-3"></div>
+      </div>
+
+      {/* ...existing code for image, details, and footer... */}
       <div className="relative h-44 overflow-hidden bg-muted">
         {project.imageUrl ? (
           <img 
@@ -72,16 +102,9 @@ export function ProjectCard({ project, caseStudy, index }: ProjectCardProps) {
           )}
         </div>
       </div>
-      
+
       <div className="p-6 flex flex-col flex-grow space-y-4">
-        <div>
-          <h3 className="text-xl font-bold font-display mb-1 group-hover:text-primary transition-colors">
-            {project.title}
-          </h3>
-          <p className="text-muted-foreground text-sm">
-            {caseStudy?.built || project.description}
-          </p>
-        </div>
+        {/* ...existing code for details... */}
 
         {caseStudy?.problem && (
           <div>
@@ -110,17 +133,7 @@ export function ProjectCard({ project, caseStudy, index }: ProjectCardProps) {
             <p className="text-sm text-foreground leading-relaxed">{caseStudy.impact}</p>
           </div>
         )}
-        
-        <div className="flex flex-wrap gap-2">
-          {project.tags?.map((tag) => (
-            <span 
-              key={tag} 
-              className="px-3 py-1 bg-secondary text-secondary-foreground text-xs font-medium rounded-full"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
+        {/* Stack badges removed from bottom as requested */}
       </div>
 
       <div className="px-6 py-4 border-t border-border/50 flex flex-wrap gap-3">
